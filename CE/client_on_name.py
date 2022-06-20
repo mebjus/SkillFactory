@@ -132,7 +132,7 @@ for col_num, value in enumerate(df_pivot.columns.values):
     worksheet.write(0, col_num, value, header_format)
 
 writer.save()
-
+#
 ######
 
 # fig, ax = plt.subplots(figsize=(8, 5))
