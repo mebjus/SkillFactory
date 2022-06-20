@@ -95,6 +95,7 @@ df_pivot = df_pivot.drop(['Дата'], axis=1)
 df_pivot = df_pivot.reindex(df_pivot.sort_values(by=['дата', 'деньги'], ascending=[True, False]).index)
 df_pivot = df_pivot[df_pivot['деньги'] > 0]
 ######  этот блок для агрегации всех клиентов
+#rjjvrtyn
 
 
 # df_pivot = df_pivot.groupby('дата').agg(
