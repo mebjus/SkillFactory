@@ -85,7 +85,7 @@ df_pivot = df.pivot_table(index=['дата', 'ФО', 'Клиент'], values=['�
 df_pivot = df_pivot.reindex(df_pivot.sort_values(by=['дата', 'деньги'], ascending=[True, False]).index).reset_index()
 df_m['Дата'] = df_m['Дата'].dt.to_period('M')
 df_pivot = df_pivot.merge(df_m, left_on='дата', right_on='Дата', how='left')
-#
+
 
 df_pivot['деньги р.д.'] = df_pivot['деньги'] / df_pivot['р.д.']
 df_pivot['шт р.д.'] = df_pivot['шт'] / df_pivot['р.д.']
