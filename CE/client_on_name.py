@@ -92,11 +92,9 @@ df_pivot['шт р.д.'] = df_pivot['шт'] / df_pivot['р.д.']
 df_pivot['вес р.д.'] = df_pivot['вес'] / df_pivot['р.д.']
 
 df_pivot = df_pivot.drop(['Дата'], axis=1)
-df_pivot = df_pivot.reindex(df_pivot.sort_values(by=['дата', 'деньги'], ascending=[True, False]).index)
+df_pivot = df_pivot.reindex(df_pivot.sort_values(by=['дата', 'деньги'], ascending=[False, False]).index)
 df_pivot = df_pivot[df_pivot['деньги'] > 0]
 ######  этот блок для агрегации всех клиентов
-#rjjvrtyn
-
 
 # df_pivot = df_pivot.groupby('дата').agg(
 #     {'Клиент': 'count', 'шт р.д.': 'sum', 'вес р.д.': 'sum', 'деньги': 'sum', 'деньги р.д.': 'sum'})
@@ -132,7 +130,7 @@ for col_num, value in enumerate(df_pivot.columns.values):
     worksheet.write(0, col_num, value, header_format)
 
 writer.save()
-#
+
 ######
 
 # fig, ax = plt.subplots(figsize=(8, 5))
