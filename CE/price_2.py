@@ -65,18 +65,20 @@ begin = df.shape[0]
 
 ########    выбор по своей географии
 
-# def ower_city(row):
-#     if str(row).upper() not in city_dict:
-#         return np.NAN
-#     else:
-#         return row
-#
-#
+def ower_city(row):
+    if str(row).upper() not in city_dict:
+        return np.NAN
+    else:
+        return row
+
+
 # df['Отправитель.Адрес.Город'] = df['Отправитель.Адрес.Город'].apply(ower_city)
 # df['Получатель.Адрес.Город'] = df['Получатель.Адрес.Город'].apply(ower_city)
 # df = df.dropna(how='any', axis=0)
 
-print(df.shape[0]*100/begin)
+df.dropna(subset=['Общая стоимость со скидкой'], how='any', axis=0, inplace=True)
+
+# print(df.shape[0]*100/begin)
 
 df['Заказ.Клиент.Не применять топливную надбавку'] = df['Заказ.Клиент.Не применять топливную надбавку'].fillna(0)
 
@@ -207,7 +209,7 @@ def get_a_price(row):
     row = tuple(row)
 
     if row in price_dict.keys():
-        print(row, '=', price_dict.get(row))
+        # print(row, '=', price_dict.get(row))
         return price_dict.get(row)
 
     params = {'cityFrom':row[0],'cityTo':row[1],'physicalWeight':row[2],'name':row[3],'quantity':'1','width':'5',
@@ -239,28 +241,27 @@ pickle.dump(price_dict, f)
 f.close()
 
 
-# df = df.loc[:,
-#      ['ФО', 'Клиент', 'Номер отправления', 'Отправитель.Адрес.Город', 'Получатель.Адрес.Город', 'Расчетный вес',
-#       'вес', 'Режим доставки', 'Вид доставки',
-#       'Общая стоимость со скидкой', 'price', 'tn']]
+df = df.loc[:,
+     ['ФО', 'Клиент', 'Номер отправления', 'Отправитель.Адрес.Город', 'Получатель.Адрес.Город', 'Расчетный вес',
+      'вес', 'Режим доставки', 'Вид доставки',
+      'Общая стоимость со скидкой', 'price', 'tn']]
 
 df1 = df[df['price'] != 'нет тарифа']
 df2 = df[df['price'] == 'нет тарифа']
 
-# df1['price'].astype('float64')
-# print(df1.info())
-# df1.loc['price'] = ['price'] * ['tn']
-
-df1['price'] = df1['price'] * df1['tn']
 df1['price'].astype('float64')
+df1 = df1[df1['price'] > 0]
+df1['price'] = df1['price'] * df1['tn']
+
 
 df_group = df1.groupby(['ФО', 'Клиент'])[['Общая стоимость со скидкой', 'price']].agg(
     {'Общая стоимость со скидкой': 'sum', 'price': 'sum'}).reset_index()
+df_group = df_group[df_group['price'] > 0]
 df_group['discount'] = (df_group['Общая стоимость со скидкой'] / df_group['price']) - 1
 
-# writer = pd.ExcelWriter('data/цены.xlsx', engine='xlsxwriter')
-# df1.to_excel(writer, sheet_name='итоги', index=True, header=True)
-# df2.to_excel(writer, sheet_name='нет тарифа', index=True, header=True)
-# df_group.to_excel(writer, sheet_name='группировка', index=True, header=True)
-# workbook = writer.book
-# writer.save()
+writer = pd.ExcelWriter('data/цены.xlsx', engine='xlsxwriter')
+df1.to_excel(writer, sheet_name='итоги', index=True, header=True)
+df2.to_excel(writer, sheet_name='нет тарифа', index=True, header=True)
+df_group.to_excel(writer, sheet_name='группировка', index=True, header=True)
+workbook = writer.book
+writer.save()
