@@ -78,8 +78,6 @@ def ower_city(row):
 
 df.dropna(subset=['Общая стоимость со скидкой'], how='any', axis=0, inplace=True)
 
-# print(df.shape[0]*100/begin)
-
 df['Заказ.Клиент.Не применять топливную надбавку'] = df['Заказ.Клиент.Не применять топливную надбавку'].fillna(0)
 
 
