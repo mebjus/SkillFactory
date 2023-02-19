@@ -13,6 +13,7 @@ fullpaths = map(lambda name: os.path.join(dirname, name), dirfiles)
 pd.options.display.float_format = '{:,.0F}'.format
 
 for file in fullpaths:
+	if file == 'data/kis/.DS_Store': os.remove('data/kis/.DS_Store')
 	df1 = pd.read_excel(file, header=2, sheet_name=None)
 	df1 = pd.concat(df1, axis=0).reset_index(drop=True)
 	df = pd.concat([df, df1], axis=0)
@@ -42,14 +43,14 @@ def ret(cell):  # столбец и ячейку передаю, возрат - 
 			return i
 	else:
 		return 'ЦФО'
-# Россия Московская область
+
 def ower_city(row):
 	if str(row[0]).upper() in city_dict:
-		return row[0]
+		return 1
 	elif row[1][:25] == 'Россия Московская область':
-		return row[1][:25]
+		return 1
 	else:
-		return np.NAN
+		return 0
 
 df.dropna(subset=['Общая стоимость со скидкой'], how='any', axis=0, inplace=True)
 
@@ -64,13 +65,16 @@ df['Общая стоимость со скидкой'] = df['Общая сто�
 df['Дата Cоздания'] = df['Дата Cоздания'].dt.strftime('%Y-%m-%d')
 
 ############ своя география
-begin = df.shape[0]
-
 df['откуда'] = df.loc[:, ['Отправитель.Адрес.Город', 'Отправитель.Адрес']].apply(ower_city, axis=1)
 df['куда'] = df.loc[:, ['Получатель.Адрес.Город', 'Получатель.Адрес']].apply(ower_city, axis=1)
-df.dropna(subset=['откуда','куда'], how='any', axis=0, inplace=True)
+# df.dropna(subset=['откуда','куда'], how='any', axis=0, inplace=True)
 
-print(round(df.shape[0]*100/begin, 1),'%')
+mask1 = df['откуда'] == 0
+mask2 = df['куда'] == 0
+df_agent = df[(mask1 | mask2)]
+df_our = df[(~mask1 & ~mask2)]
+
+print(round(df_our.shape[0]*100/df.shape[0], 1),'%')
 #############
 
 # df.rename(columns={'Дата Cоздания': 'дата',
@@ -91,7 +95,8 @@ print(round(df.shape[0]*100/begin, 1),'%')
 #
 # print(round(df_inner['деньги'].sum(),0))
 # print(round(df_or['деньги'].sum(),0))
-# writer = pd.ExcelWriter('data/география.xlsx', engine='xlsxwriter')
-# df.to_excel(writer, sheet_name='итоги', index=True, header=True)
-# workbook = writer.book
-# writer.save()
+writer = pd.ExcelWriter('data/география.xlsx', engine='xlsxwriter')
+df_our.to_excel(writer, sheet_name='итоги', index=True, header=True)
+df_agent.to_excel(writer, sheet_name='агенты', index=True, header=True)
+workbook = writer.book
+writer.save()

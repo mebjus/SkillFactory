@@ -5,22 +5,18 @@ import seaborn as sns
 import os
 from pandas.api.types import CategoricalDtype
 
-df = pd.DataFrame
+df = pd.DataFrame()
 dirname = 'data/kis/'
 dirfiles = os.listdir(dirname)
 fullpaths = map(lambda name: os.path.join(dirname, name), dirfiles)
 pd.options.display.float_format = '{:,.0F}'.format
 
 for file in fullpaths:
-    if df.empty:
-        if file.find('.xls') != -1:
-            df = pd.read_excel(file, header=2, sheet_name=None)
-            df = pd.concat(df, axis=0).reset_index(drop=True)
-    else:
-        if file.find('.xls') != -1:
-            df1 = pd.read_excel(file, header=2, sheet_name=None)
-            df1 = pd.concat(df1, axis=0).reset_index(drop=True)
-            df = pd.concat([df, df1], axis=0)
+	if file == 'data/kis/.DS_Store': os.remove('data/kis/.DS_Store')
+	df1 = pd.read_excel(file, header=2, sheet_name=None)
+	df1 = pd.concat(df1, axis=0).reset_index(drop=True)
+	df = pd.concat([df, df1], axis=0)
+
 
 dirname = 'data/day_of_month.xlsx'
 df_m = pd.read_excel(dirname)
