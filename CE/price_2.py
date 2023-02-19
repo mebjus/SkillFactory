@@ -19,9 +19,10 @@ fullpaths = map(lambda name: os.path.join(dirname, name), dirfiles)
 pd.options.display.float_format = '{:,.0F}'.format
 
 for file in fullpaths:
-    df1 = pd.read_excel(file, header=2, sheet_name=None)
-    df1 = pd.concat(df1, axis=0).reset_index(drop=True)
-    df = pd.concat([df, df1], axis=0)
+	if file == 'data/kis/.DS_Store': os.remove('data/kis/.DS_Store')
+	df1 = pd.read_excel(file, header=2, sheet_name=None)
+	df1 = pd.concat(df1, axis=0).reset_index(drop=True)
+	df = pd.concat([df, df1], axis=0)
 
 price_dict = {}
 
@@ -257,9 +258,9 @@ df_group = df1.groupby(['ФО', 'Клиент'])[['Общая стоимость
 df_group = df_group[df_group['price'] > 0]
 df_group['discount'] = (df_group['Общая стоимость со скидкой'] / df_group['price']) - 1
 
-writer = pd.ExcelWriter('data/цены.xlsx', engine='xlsxwriter')
-df1.to_excel(writer, sheet_name='итоги', index=True, header=True)
-df2.to_excel(writer, sheet_name='нет тарифа', index=True, header=True)
-df_group.to_excel(writer, sheet_name='группировка', index=True, header=True)
-workbook = writer.book
-writer.save()
+
+with pd.ExcelWriter('data/цены.xlsx') as writer:
+    df1.to_excel(writer, sheet_name='итоги')
+    df2.to_excel(writer, sheet_name='нет тарифа')
+    df_group.to_excel(writer, sheet_name='группировка')
+
