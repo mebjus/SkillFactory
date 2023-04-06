@@ -105,6 +105,9 @@ df.rename(columns={'Дата Cоздания' : 'дата', 'Номер отпр
                    'Расчетный вес':'вес'}, inplace=True)
 
 ############ своя география
+
+# df = df[df['Вид доставки'] != 'Местная']
+
 df['откуда'] = df.loc[:, ['Отправитель.Адрес.Город', 'Отправитель.Адрес']].apply(ower_city, axis=1)
 df['куда'] = df.loc[:, ['Получатель.Адрес.Город', 'Получатель.Адрес']].apply(ower_city, axis=1)
 
@@ -121,7 +124,10 @@ print(round(df_our.shape[0]*100/df.shape[0], 1),'%', ' - наша сеть')
 #### при копировании df выабрать география - наша или нет или общая
 
 ##### по группе веса
-df_w = df_agent.copy()
+df_w = df.copy()
+# df_w = df_our.copy()
+# df_w = df_agent.copy()
+
 df_w = df_w.loc[:, ['деньги', 'вес', 'ФО','Группа вес']]
 df_w = df_w.groupby(['ФО','Группа вес']).agg([np.sum, len])
 
@@ -131,7 +137,9 @@ df_w.drop([('вес', 'len')], axis=1, inplace=True)
 df_w.rename(columns={('len'):('кол-во')}, inplace=True)
 
 ##### по режимам доставки
-df_r = df_agent.copy()
+df_r = df.copy()
+# df_r = df_our.copy()
+# df_r = df_agent.copy()
 
 # fig, ax = plt.subplots(nrows=2, ncols=1)
 # fig.suptitle('деньги / вес')

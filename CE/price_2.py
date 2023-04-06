@@ -67,10 +67,12 @@ begin = df.shape[0]
 ########    выбор по своей географии
 
 def ower_city(row):
-    if str(row).upper() not in city_dict:
-        return np.NAN
-    else:
-        return row
+	if str(row[0]).upper() in city_dict:
+		return 1
+	elif row[1][:25] == 'Россия Московская область':
+		return 1
+	else:
+		return 0
 
 
 # df['Отправитель.Адрес.Город'] = df['Отправитель.Адрес.Город'].apply(ower_city)

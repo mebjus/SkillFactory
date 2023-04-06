@@ -1,11 +1,11 @@
 from readdf import *
 
 a = Readdf()
-# a.fo(own=True)
-print(a[1])
-#
-# df = a.df
-# print(df.info())
+a.fo(own=False)
+print(a[5]['Клиент'])
+
+df = a.df
+print(df)
 
 ####################
 # with pd.ExcelWriter('data/tst.xlsx') as writer:
