@@ -213,19 +213,19 @@ def get_a_price(row):
         # print(row, '=', price_dict.get(row))
         return price_dict.get(row)
 
-    params = {'cityFrom':row[0],'cityTo':row[1],'physicalWeight':row[2],'name':row[3],'quantity':'1','width':'5',
-              'height':'5', 'length':'5'}
-    response = requests.get(url, params=params)
-
-    for i in response.json()['Result']:
-        if i['Name'].upper() == row[3]:
-            price_dict[row] = i['TotalPrice']
-            print(row, '+', i['TotalPrice'])
-            return i['TotalPrice']
-
-    price_dict[row] = 'нет тарифа'
-    print(row, '+', 'нет тарифа')
-    return 'нет тарифа'
+    # params = {'cityFrom':row[0],'cityTo':row[1],'physicalWeight':row[2],'name':row[3],'quantity':'1','width':'5',
+    #           'height':'5', 'length':'5'}
+    # response = requests.get(url, params=params)
+	#
+    # for i in response.json()['Result']:
+    #     if i['Name'].upper() == row[3]:
+    #         price_dict[row] = i['TotalPrice']
+    #         print(row, '+', i['TotalPrice'])
+    #         return i['TotalPrice']
+	#
+    # price_dict[row] = 'нет тарифа'
+    # print(row, '+', 'нет тарифа')
+    # return 'нет тарифа'
 
 
 start_time = time.time()
